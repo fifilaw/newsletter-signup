@@ -21,8 +21,13 @@ app.post("/",function(req, res){
 
   var data ={
     members:[
-      {email_address: email,
-      status: "subscribed"
+      {
+      email_address: email,
+      status: "subscribed",
+      merge_fields: {
+        FNAME: firstName,
+        LNAME: lastName
+      }
     }
     ]
   };
@@ -35,14 +40,21 @@ app.post("/",function(req, res){
     headers: {
       "Authorization": "fifi a023c44b1cfa942165344bc586bf5c00-us4"
     },
-    body: jsonData
+    // body: jsonData
   };
+
+  app.post("/failure", function(req, res){
+    res.redirect("/");
+  });
 
   request(options, function(error, response, body){
     if(error){
       console.log(error);
+      res.sendFile(__dirname + "/failure.html");
+    }else if(response.statusCode === 200){
+      res.sendFile(__dirname + "/success.html");
     }else{
-      console.log(response.statusCode);
+      res.sendFile(__dirname + "/failure.html");
     }
   });
 
